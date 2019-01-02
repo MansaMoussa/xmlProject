@@ -4,6 +4,7 @@
 '''
 @author: MansaMoussa
 '''
+import os
 import urllib
 import xml.sax
 from xml.dom.minidom import getDOMImplementation
@@ -14,7 +15,7 @@ import urllib2
 import xml.sax
 from xml.dom.minidom import getDOMImplementation
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-
+import xml.etree.ElementTree as ET
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
@@ -30,7 +31,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             content_length = int(self.headers["Content-Length"])
             post_data = self.rfile.read(content_length)
             data = parse_qs(post_data[0:])
-            #print post_data
+
             # print post_data
             #  print t["test"]
             # print type(t["xmldata"][0])
@@ -76,6 +77,13 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         #envoie OK OU KO au redacteur
 
+    def verificationQuestionnaire(self,id):
+        for i in os.listdir(os.getcwd()):
+            if i == (str(id)+".xml"):
+                print "deja connu"
+                return False
+
+        return True
 
 if __name__ == '__main__':
     print "Gestionnaire QCM Server Started"
