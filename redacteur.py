@@ -75,18 +75,34 @@ def make_xml():
 
 
 if __name__ == '__main__':
-    url = "http://localhost:8000"
+    url = "http://localhost:8282"
     data, dataReoponse = make_xml()
     # print data
-    post_dict = {'xmldata': data}
-    # print post_dict
-    #params = urllib.urlencode(post_dict)
-    post_req = urllib2.Request(url, data)
+    post_dict = {'xmldata': data,'type': "sendQuestionnaire"}
+
+    print post_dict
+    param = urllib.urlencode(post_dict)
+    print param
+    post_req = urllib2.Request(url,param)
     response = urllib2.urlopen(post_req)
-    response_data = response.getcode()
-    # print response_data
+
+    # print post_dict
+    # print post_dict
+    # params = urllib.urlencode(post_dict)
+    # print params
+    # params =urllib.parse.urlencode(post_dict, urllib.qu)
+    # params = urllib.quote(params,'+')
+    # print params
+    # bin=params.encode('utf-8')
+    # print bin
+    # post_req = urllib2.Request(url, bin)
+
+    #    response = urllib2.urlopen(post_req)
+
+    response_data = response.read()
+    print response_data
     response.close()
-    print type(response_data)
+    print response_data
     if response_data == 200:
         # envoie des données au correcteur
         print "a envoyer xml"
