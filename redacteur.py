@@ -14,11 +14,12 @@ def make_xml():
     impl = getDOMImplementation()
     impl2 = getDOMImplementation()
 
-    newdocreponse = impl2.createDocument(None, "reponse", None)
+    newdocreponse = impl2.createDocument(None, "Reponse", None)
     newrootreponse = newdocreponse.documentElement
-    newnodereponse = newdocreponse.createElement('identifiant')
+    newnodereponse = newdocreponse.createElement('Identifiant')
+    idQuestionnaire = raw_input('Quelle id voulez vous mettre a ce questionnaire?')
     # QUE METTRE EN IDENTIFIANT?????????? mcomment mettre en place avec formation et matiere?
-    text = newdocreponse.createTextNode("test")
+    text = newdocreponse.createTextNode(idQuestionnaire)
     newnodereponse.appendChild(text)
     newrootreponse.appendChild(newnodereponse)
 
@@ -27,9 +28,10 @@ def make_xml():
     # creation questionnaire
     newnode = newdoc.createElement('Questionnaire')
 
-    newnode.setAttribute("id", "5")
-    newnode.setAttribute("id_formation", "5")
-    newnode.setAttribute("id_matiere", "test")
+
+    newnode.setAttribute("id", idQuestionnaire)
+    newnode.setAttribute("id_formation",  raw_input('Quelle id de formation voulez vous mettre pour ce questionnaire?'))
+    newnode.setAttribute("id_matiere", raw_input('Quelle id de matiere voulez vous mettre pour ce questionnaire?') )
     newroot.appendChild(newnode)
     # creation des différentes questions
 
@@ -76,13 +78,14 @@ def make_xml():
 
 if __name__ == '__main__':
     url = "http://localhost:8282"
+    urlCorrection ="http://localhost:8383"
     data, dataReoponse = make_xml()
-    # print data
-    post_dict = {'xmldata': data,'type': "sendQuestionnaire"}
+    #print data
+    post_dict = {'type': 'sendQuestionnaire','xmldata': data}
 
-    print post_dict
+  #  print post_dict
     param = urllib.urlencode(post_dict)
-    print param
+   # print param
     post_req = urllib2.Request(url,param)
     response = urllib2.urlopen(post_req)
 
@@ -100,11 +103,17 @@ if __name__ == '__main__':
     #    response = urllib2.urlopen(post_req)
 
     response_data = response.read()
-    print response_data
+
     response.close()
-    print response_data
-    if response_data == 200:
+   # print response_data
+    if response_data == "OK":
         # envoie des données au correcteur
-        print "a envoyer xml"
+        post_dict = {'xmldata': dataReoponse, 'type': "sendCorrection"}
+        #print post_dict
+        param = urllib.urlencode(post_dict)
+        #print param
+        post_req = urllib2.Request(urlCorrection, param)
+        response = urllib2.urlopen(post_req)
+        #print "a envoyer xml"
 
     # si ok envoyer les réponses au gestionnaire QCM sinon ne rien faire
