@@ -41,14 +41,15 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             if str(data["type"][0])=="sendQuestionnaire":
                 print "faire verif questionnaire"
             elif str(data["type"][0])=="authEtudiant":
-                print "\n***************************************************"
+                print "\n******************************************************"
                 print "**** THE SERVER IS WAITING FOR THE AUTHENTICATION ****"
-                print "***************************************************\n"
+                print "******************************************************\n"
                 print "###### Authentication Started ######"
                 print "ID : ",
                 print data["StudentID"][0]
                 print "PASSWORD : ",
-                print data["StudentPWD"][0]
+                taillePWD = len(data["StudentPWD"][0])
+                print "*"*taillePWD
                 studentID = int(data["StudentID"][0])
                 studentPWD = data["StudentPWD"][0]
 

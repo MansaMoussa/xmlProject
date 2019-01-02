@@ -36,38 +36,31 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             print "\n*******************************************************"
             print "**** THE SERVER START CHECKING THE AUTHENTICATION ****\n"
             print "*******************************************************\n"
-            print "The ID ( ",
+            print "The ID ",
             print data["StudentID"],
-            print ") EXIST"
-            print "The PASSWORD ( ",
+            print " EXIST"
+            print "The PASSWORD ",
             print data["StudentPWD"],
-            print ") EXIST"
+            print " EXIST"
             studentID = int(data["StudentID"][0])
             studentPWD = data["StudentPWD"][0]
             print "#########################################"
-            if(True):
-                studentSubscription = True
-            else :
-                studentSubscription = False
             # Envoie de la demande d'autentification au serveur dédié
-            post_dict = {'type': "authAnswer", 'studentSubscription': str(studentSubscription)}
-            param = urllib.urlencode(post_dict)
-            post_req = urllib2.Request(url, param)
-            response = urllib2.urlopen(post_req)
+            if True:
+                post_dict = {'type': "authAnswer", 'studentSubscription': "True"}
+                param = urllib.urlencode(post_dict)
+                post_req = urllib2.Request(url, param)
+                response = urllib2.urlopen(post_req)
+            else :
+                post_dict = {'type': "authAnswer", 'studentSubscription': "False"}
+                param = urllib.urlencode(post_dict)
+                post_req = urllib2.Request(url, param)
+                response = urllib2.urlopen(post_req)
 
 
 
 def make_xml():
     impl = getDOMImplementation()
-    impl2 = getDOMImplementation()
-
-    # newdocreponse = impl2.createDocument(None, "reponse", None)
-    # newrootreponse = newdocreponse.documentElement
-    # newnodereponse = newdocreponse.createElement('identifiant')
-    # # QUE METTRE EN IDENTIFIANT?????????? mcomment mettre en place avec formation et matiere?
-    # text = newdocreponse.createTextNode("test")
-    # newnodereponse.appendChild(text)
-    # newrootreponse.appendChild(newnodereponse)
 
     newdoc = impl.createDocument(None, "EtudiantsIsncrits", None)
     newroot = newdoc.documentElement
