@@ -75,10 +75,10 @@ def make_xml():
 
 
 if __name__ == '__main__':
-    url = "http://localhost:8000"
+    url = "http://localhost:8282"
     data, dataReoponse = make_xml()
     # print data
-    post_dict = {'xmldata': data,'test': 1}
+    post_dict = {'xmldata': data,'type': "sendQuestionnaire"}
 
     print post_dict
     param = urllib.urlencode(post_dict)
