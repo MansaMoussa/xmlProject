@@ -17,7 +17,7 @@ if __name__ == '__main__':
     response_data = response.read()
     print response_data #Recoir un petit message pour faire beau et montrer l'intéraction avec le serveur contacté
 
-    idEtu = raw_input('Veuillez entrer votre numero etudiant : ')
+    idEtu = raw_input('Veuillez entrer votre numero étudiant : ')
     post_req = urllib2.Request(url, "StudentID "+str(idEtu))
     response = urllib2.urlopen(post_req)
 
