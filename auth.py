@@ -6,6 +6,11 @@
 '''
 
 import urllib
+import xml.sax
+from xml.dom.minidom import getDOMImplementation
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from urlparse import parse_qs
+import urllib
 import urllib2
 import xml.sax
 from xml.dom.minidom import getDOMImplementation
@@ -20,23 +25,35 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(b"<h1>Hello, world!</h1>")
 
     def do_POST(self):
+        url = "http://localhost:8282"
         self.send_response(200)
         content_length = int(self.headers["Content-Length"])
         post_data = self.rfile.read(content_length)
-        #print post_data
-        if((str(post_data).split(' '))[0]=="Student"):
-            print post_data
+        data = parse_qs(post_data[0:])
+
+
+        if str(data["type"][0])=="authEtudiant":
             print "\n*******************************************************"
             print "**** THE SERVER START CHECKING THE AUTHENTICATION ****\n"
             print "*******************************************************\n"
-        elif((str(post_data).split(' '))[0]=="StudentID"):
-            studentID = int((str(post_data).split(' '))[1])
-            print "The ID ( "+ str(studentID),
+            print "The ID ( ",
+            print data["StudentID"],
             print ") EXIST"
-        elif((str(post_data).split(' '))[0]=="StudentPWD"):
-            studentPWD = (str(post_data).split(' '))[1]
-            print "The PASSWORD ( "+ studentPWD,
+            print "The PASSWORD ( ",
+            print data["StudentPWD"],
             print ") EXIST"
+            studentID = int(data["StudentID"][0])
+            studentPWD = data["StudentPWD"][0]
+            print "#########################################"
+            if(True):
+                studentSubscription = True
+            else :
+                studentSubscription = False
+            # Envoie de la demande d'autentification au serveur dédié
+            post_dict = {'type': "authAnswer", 'studentSubscription': str(studentSubscription)}
+            param = urllib.urlencode(post_dict)
+            post_req = urllib2.Request(url, param)
+            response = urllib2.urlopen(post_req)
 
 
 
