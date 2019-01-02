@@ -4,6 +4,7 @@
 '''
 @author: MansaMoussa
 '''
+import os
 import urllib
 import xml.sax
 from xml.dom.minidom import getDOMImplementation
@@ -14,7 +15,7 @@ import urllib2
 import xml.sax
 from xml.dom.minidom import getDOMImplementation
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-
+import xml.etree.ElementTree as ET
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
@@ -30,7 +31,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             content_length = int(self.headers["Content-Length"])
             post_data = self.rfile.read(content_length)
             data = parse_qs(post_data[0:])
-            
+
             # print post_data
             #  print t["test"]
             # print type(t["xmldata"][0])
@@ -39,36 +40,24 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             # prendre data pour la suite
             if data["type"][0]=="sendQuestionnaire":
                 print "faire verif questionnaire"
+
+                xmla= data["xmldata"][0]
+                print xmla
+                tree = ET.fromstring(xmla)
+                list = tree.find(".//Questionnaire/[@id]").attrib
+                id = list["id"]
+                if(self.verificationQuestionnaire(id)):
+                    print "creer fichier"
+                    fichier = open(id+".xml", "a")
+                    fichier.write(xmla)
+                    fichier.close()
+
             elif data["type"][0]=="authEtudiant":
                 print "faire verif login"
             else:
                 print "ne rien faire"
 
 
-    #        if (str(post_data) == "Student"):
-     #           print "\n***************************************************"
-      #          print "**** THE SERVER IS WAITING FOR THE AUTHENTICATION ****"
-       #         print "***************************************************\n"
-
-        #        post_req = urllib2.Request(url, "Student")
-         #       response = urllib2.urlopen(post_req)
-          #  elif ((str(post_data).split(' '))[0] == "StudentID"):
-           #     print "###### Authentication Started ######"
-            #    print "ID : ",
-             #   print str((str(post_data).split())[1])
-              #  studentID = int(str((str(post_data).split())[1]))
-
-               # post_req = urllib2.Request(url, "StudentID " + str(studentID))
-                #response = urllib2.urlopen(post_req)
-         #   elif ((str(post_data).split(' '))[0] == "StudentPWD"):
-          #      print "PASSWORD : ",
-           #     print str((str(post_data).split())[1])
-            #    print "###### Authentication Ended ######"
-             #   studentPWD = (str(post_data).split())[1]
-
-                # Envoie de la demande d'autentification au serveur dédié
-             #   post_req = urllib2.Request(url, "StudentPWD " + studentPWD)
-            #  response = urllib2.urlopen(post_req)
 
 
         #print xml.dom.minidom.parseString(test).toxml()
@@ -79,6 +68,13 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         #envoie OK OU KO au redacteur
 
+    def verificationQuestionnaire(self,id):
+        for i in os.listdir(os.getcwd()):
+            if i == (str(id)+".xml"):
+                print "deja connu"
+                return False
+
+        return True
 
 if __name__ == '__main__':
     print "test"
