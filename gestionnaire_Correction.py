@@ -37,7 +37,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             fichier.write(xmla)
             fichier.close()
 
-        #print xml.dom.minidom.parseString(post_data).toxml()
+
+            #print xml.dom.minidom.parseString(post_data).toxml()
 
 
 

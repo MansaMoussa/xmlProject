@@ -116,5 +116,5 @@ if __name__ == '__main__':
     parser = xml.sax.make_parser()
     parser.setContentHandler(InkscapeSvgHandler())
     parser.parse(open("1.xml", "r"))
-
+    #envoie de newdocreponse.toprettyxml() dans end document dans la classe
 
