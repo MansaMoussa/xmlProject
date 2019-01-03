@@ -115,8 +115,8 @@ if __name__ == '__main__':
     post_req = urllib2.Request(url, param)
     response = urllib2.urlopen(post_req)
     response_data = response.read()
-
-    if (str(response_data)!="KO" and str(response_data.split(' ')[0]).isdigit()) or str(response_data)!="OK" :
+    
+    if ((str(response_data)!="KO" and str(response_data.split(' ')[0]).isdigit()) or str(response_data)=="OK") :
         print "Authentication succeded"
         print response_data
         # A list that contains the id of the qcm and the id of the matiere
