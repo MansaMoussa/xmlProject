@@ -47,7 +47,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
             id = tree.find(".//Identifiant").text
 
-            fichier = open(id + "correc.xml", "a")
+            fichier = open(id + "correc.xml", "w")
             fichier.write(xmla)
             fichier.close()
 
@@ -167,9 +167,6 @@ class Thread(threading.Thread):
 if __name__ == '__main__':
     print "test"
     th1 = Thread(10)
-    #s=SimpleHTTPRequestHandler()
-    #s.start()
-    #httpd = HTTPServer(('localhost', 8383), SimpleHTTPRequestHandler)
 
     httpd = HTTPServer(('127.0.0.1', 8383), SimpleHTTPRequestHandler)
     httpd.serve_forever()

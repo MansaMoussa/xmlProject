@@ -123,9 +123,9 @@ if __name__ == '__main__':
         print response_data
         # A list that contains the id of the qcm and the id of the matiere
         list_response_received = response_data
-        # parser = xml.sax.make_parser()
-        # parser.setContentHandler(InkscapeSvgHandler())
-        # parser.parse(open("1.xml", "r"))
+        parser = xml.sax.make_parser()
+        parser.setContentHandler(InkscapeSvgHandler())
+        parser.parse(open("1.xml", "r"))
     elif (str(response_data)=="KO"):
         print "Authentication failed"
     else :
