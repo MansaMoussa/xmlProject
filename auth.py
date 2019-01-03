@@ -37,14 +37,14 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             print "\n*******************************************************"
             print "**** THE SERVER START CHECKING THE AUTHENTICATION ****\n"
             print "*******************************************************\n"
-            print myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]')
+            print myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]').values()
             # Envoie de la demande d'autentification au serveur dédié
             if not not myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]'):
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
                 #id formation mat1 mat2 ...
-                #self.wfile.write(str(data["StudentID"][0])+" "+myfile.xpath('/EtudiantsIsncrits/Student[@id_formation]')+" "+mat)
-                self.wfile.write("OK")
+                self.wfile.write(str(data["StudentID"][0])+" "+myfile.xpath('/EtudiantsIsncrits/Student[@id_formation]')+" "+mat)
+                #self.wfile.write("OK")
                 print "The ID ",
                 print data["StudentID"],
                 print " AND The PASSWORD ",
