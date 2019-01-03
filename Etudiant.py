@@ -8,11 +8,9 @@
 import urllib
 import urllib2
 import pika
-
 import xml.sax
 from xml.sax import saxutils
 from xml.dom.minidom import getDOMImplementation
-
 
 
 
@@ -118,7 +116,7 @@ if __name__ == '__main__':
     response = urllib2.urlopen(post_req)
     response_data = response.read()
 
-    if (str(response_data)!="KO") and str(response_data.split(' ')[0]).isdigit() :
+    if (str(response_data)!="KO" and str(response_data.split(' ')[0]).isdigit()) or str(response_data)!="OK" :
         print "Authentication succeded"
         print response_data
         # A list that contains the id of the qcm and the id of the matiere
@@ -126,12 +124,6 @@ if __name__ == '__main__':
         qcm_choix = ""
         matiere_choix = ""
 
-        # if(len(list_response_received)==1) and (str(response_data)!="KO"):
-        #     print "Vous avez reçu une propostions de QCM"
-        #     tmp = list_response_received.spli(;)[0]
-        #     qcm_choix = str(tmp.split()[0])
-        #     matiere_choix = str(tmp.split()[1])
-        # else:
         for i in range(list_response_received.count(';')):
             tmp = list_response_received.split(';')[i]
             print tmp
@@ -140,8 +132,6 @@ if __name__ == '__main__':
             print "Vous avez la possibilité de choisir le QCM ayant l'ID "+qcm_choix+" correspondant à la matière "+matiere_choix
 
         qcm_choix = raw_input('Veuillez choisir l\'ID du QCM souhaitez faire : ')
-        #matiere_choix = raw_input('Veuillez choisir l\'ID de la matière : ')
-
 
 
         # parser = xml.sax.make_parser()

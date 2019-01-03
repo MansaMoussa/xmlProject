@@ -33,16 +33,15 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             data = parse_qs(post_data[0:])
 
             # print post_data
-            #  print t["test"]
+            # print t["test"]
             # print type(t["xmldata"][0])
-            #print xml.dom.minidom.parseString( t["xmldata"][0]).toxml()
-            #les donnees qui sont dans la variable data sera un dictionnaire,
+            # print xml.dom.minidom.parseString( t["xmldata"][0]).toxml()
+            # les donnees qui sont dans la variable data sera un dictionnaire,
             # prendre data pour la suite
             if str(data["type"][0])=="sendQuestionnaire":
-                #   print "faire verif questionnaire"
+                # print "faire verif questionnaire"
 
                 xmla = data["xmldata"][0]
-                # print xmla
                 tree = ET.fromstring(xmla)
                 list = tree.find(".//Questionnaire/[@id]").attrib
                 id = list["id"]
@@ -51,10 +50,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     fichier = open(id + ".xml", "a")
                     fichier.write(xmla)
                     fichier.close()
+
                     self.send_header("Content-type", "text/html")
-
                     self.end_headers()
-
                     self.wfile.write("OK")
                 else:
                     self.send_header("Content-type", "text/html")
@@ -86,18 +84,16 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 if(len(response_data)>=3):
                     self.send_header('Content-type', 'text/html')
                     self.end_headers()
-                    #self.wfile.write("OK")
                     qcm_proposition = ""
                     splited_response_data = response_data.split(' ')
                     id_student = splited_response_data[0]
                     id_formation = splited_response_data[1]
                     xml_files = [f for f in glob.glob("*.xml")]
-                    for i in range(len(xml_files)):
+                    for i in range(len(xml_files)) :
                         prefix_file_name = xml_files[i].split('.xml')[0]
                         if str(prefix_file_name).isdigit() :
                             myfile = etree.parse(str(xml_files[i]))
-                            for j in range(2,len(splited_response_data)):
-                                #print myfile.xpath('/QCM2/Questionnaire[@id=\"'+str(prefix_file_name)+'\"][@id_formation=\"'+str(id_formation)+'\"][@id_matiere=\"'+str(splited_response_data[j])+'\"]')
+                            for j in range(2,len(splited_response_data)) :
                                 if not not myfile.xpath('/QCM2/Questionnaire[@id=\"'+str(prefix_file_name)+'\"][@id_formation=\"'+str(id_formation)+'\"][@id_matiere=\"'+str(splited_response_data[j])+'\"]'):
                                     # l'id du questionnaire + l'id de la matiere
                                     qcm_proposition =qcm_proposition+str(prefix_file_name)+" "+str(splited_response_data[j])+";"
@@ -114,12 +110,11 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 
 
-
-        #print xml.dom.minidom.parseString(test).toxml()
-       # print xml.dom.minidom.parseString(post_data).toxml()
-        #faire la difference sur qui envoie le fichier pour savoir l'action a faire
-        #test si ID existe puis si unique enregistrer le XML
-        #verification avec xpath
+        # print xml.dom.minidom.parseString(test).toxml()
+        # print xml.dom.minidom.parseString(post_data).toxml()
+        # faire la difference sur qui envoie le fichier pour savoir l'action a faire
+        # test si ID existe puis si unique enregistrer le XML
+        # verification avec xpath
 
         #envoie OK OU KO au redacteur
 

@@ -130,9 +130,4 @@ def make_xml():
 if __name__ == '__main__':
     print "Authentication Server Started"
     httpd = HTTPServer(('localhost', 4242), SimpleHTTPRequestHandler)
-    # myDB = make_xml()
-    # print "iciciciciic"
-    # me = etree.parse("auth.xml")
-    # print me.xpath('/EtudiantsIsncrits/Student[@id="7" and @id_formation="5"]/Matieres/Matiere[@id_matiere="20"]')
-    # print "iciciciciic"
     httpd.serve_forever()
