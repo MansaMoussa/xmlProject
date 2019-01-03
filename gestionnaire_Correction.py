@@ -62,28 +62,39 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
     #contenuFichier=""
     score=0
     total=0
+    idEtu=""
     def startDocument(self):
 
         pass
 
     def endDocument(self):
-        print "score: "+str(self.score)+"/"+str(self.total)
-        ##creation du xml a envoyer
-        #<student  id="idStudent" score="score/total">
 
+        ##creation du xml a envoyer
+        impl = getDOMImplementation()
+        newdocreponse = impl.createDocument(None, "Resultat", None)
+        newrootreponse = newdocreponse.documentElement
+        newnodecontenureponse3 = newdocreponse.createElement("Etudiant")
+        newnodecontenureponse3.setAttribute("id", self.idEtu)
+        newnodecontenureponse3.setAttribute("score", str(self.score)+"/"+str(self.total))
+        newnodecontenureponse3.setAttribute("idQuestionnaire", self.numId)
+        newrootreponse.appendChild(newnodecontenureponse3)
+
+        #<student  id="idStudent" score="score/total" idQuestionnaire="numId">
+        print newdocreponse.toprettyxml()
         # newrootreponse.appendChild(newnodecontenureponse)
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
         channel = connection.channel()
         channel.queue_declare(queue='result')
         channel.basic_publish(exchange='',
                               routing_key='result',
-                              body=str(self.score)+"/"+str(self.total))
+                              body=newdocreponse.toprettyxml())
         connection.close()
         print "fin"
         pass
 
     def startElement(self, name, attrs):
-
+        if name == "Etudiant":
+            self.idEtu=attrs.getValue("id")
         if name == "Identifiant":
             self.id=True
             #regarder dans charater l'id

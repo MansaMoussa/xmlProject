@@ -31,7 +31,10 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
 
     def startDocument(self):
         self.newrootreponse = self.newdocreponse.documentElement
-
+        a=idEtu
+        newnodecontenureponse3 = self.newdocreponse.createElement("Etudiant")
+        newnodecontenureponse3.setAttribute("id", idEtu)
+        self.newrootreponse.appendChild(newnodecontenureponse3)
         self.newnodecontenureponse = self.newdocreponse.createElement("contenu")
         pass
 
