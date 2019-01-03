@@ -134,9 +134,9 @@ if __name__ == '__main__':
         qcm_choix = raw_input('Veuillez choisir l\'ID du QCM souhaitez faire : ')
 
 
-        # parser = xml.sax.make_parser()
-        # parser.setContentHandler(InkscapeSvgHandler())
-        # parser.parse(open("1.xml", "r"))
+        parser = xml.sax.make_parser()
+        parser.setContentHandler(InkscapeSvgHandler())
+        parser.parse(open(qcm_choix+".xml", "r"))
     elif (str(response_data)=="KO"):
         print "Authentication failed"
     else :

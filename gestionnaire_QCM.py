@@ -6,8 +6,11 @@
 '''
 import os
 import glob
+import threading
+
+import pika
 from lxml import etree
-from xml.dom.minidom import getDOMImplementation
+from xml.dom.minidom import getDOMImplementation, parseString
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from urlparse import parse_qs
 import urllib
