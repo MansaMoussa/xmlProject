@@ -5,8 +5,8 @@
 @author: MansaMoussa
 '''
 import os
-import urllib
-import xml.sax
+import glob
+from lxml import etree
 from xml.dom.minidom import getDOMImplementation
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from urlparse import parse_qs
@@ -83,10 +83,26 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 response = urllib2.urlopen(post_req)
                 response_data = response.read()
                 print response_data
-                if(str(response_data)=="OK"):
+                if(len(response_data)>=3):
                     self.send_header('Content-type', 'text/html')
                     self.end_headers()
-                    self.wfile.write("OK")
+                    #self.wfile.write("OK")
+                    qcm_proposition = []
+                    splited_response_data = response_data.split(' ')
+                    id_student = splited_response_data[0]
+                    id_formation = splited_response_data[1]
+                    xml_files = [f for f in glob.glob("*.xml")]
+                    for i in range(len(xml_files)):
+                        prefix_file_name = xml_files[i].split('.xml')[0]
+                        if str(prefix_file_name).isdigit() :
+                            myfile = etree.parse(str(xml_files[i]))
+                            for j in range(2,len(splited_response_data)):
+                                #print myfile.xpath('/QCM2/Questionnaire[@id=\"'+str(prefix_file_name)+'\"][@id_formation=\"'+str(id_formation)+'\"][@id_matiere=\"'+str(splited_response_data[j])+'\"]')
+                                if not not myfile.xpath('/QCM2/Questionnaire[@id=\"'+str(prefix_file_name)+'\"][@id_formation=\"'+str(id_formation)+'\"][@id_matiere=\"'+str(splited_response_data[j])+'\"]'):
+                                    # l'id du questionnaire + l'id de la matiere
+                                    qcm_proposition.append(str(prefix_file_name)+" "+str(splited_response_data[j]))
+                    # Une proposition de qcm est envoyé à l'étudiant
+                    self.wfile.write(qcm_proposition)
                 else :
                     self.send_header('Content-type', 'text/html')
                     self.end_headers()

@@ -49,7 +49,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 id_matiere = myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"]/Matieres/Matiere/@id_matiere')
                 for i in range(int(nbre_matieres[0])):
                     id_matieres = id_matieres+str(id_matiere[i])+" "
-                print id_matieres
+                #print id_matieres
                 self.wfile.write(str(data["StudentID"][0])+" "+str(id_formation[0])+" "+id_matieres)
                 #self.wfile.write("OK")
                 print "The ID ",
@@ -82,7 +82,7 @@ def make_xml():
     matieres1 = newdoc.createElement('Matieres')
     matieres1.setAttribute("nbre_matieres", "1")
     matiere1 = newdoc.createElement('Matiere')
-    matiere1.setAttribute("id_matiere", "PenTest")
+    matiere1.setAttribute("id_matiere", "20")
     matieres1.appendChild(matiere1)
     etu1.appendChild(matieres1)
     newroot.appendChild(etu1)
@@ -94,11 +94,11 @@ def make_xml():
     matieres2 = newdoc.createElement('Matieres')
     matieres2.setAttribute("nbre_matieres", "3")
     matiere1 = newdoc.createElement('Matiere')
-    matiere1.setAttribute("id_matiere", "Forensic")
+    matiere1.setAttribute("id_matiere", "10")
     matiere2 = newdoc.createElement('Matiere')
-    matiere2.setAttribute("id_matiere", "Network")
+    matiere2.setAttribute("id_matiere", "15")
     matiere3 = newdoc.createElement('Matiere')
-    matiere3.setAttribute("id_matiere", "PenTest")
+    matiere3.setAttribute("id_matiere", "20")
     matieres2.appendChild(matiere1)
     matieres2.appendChild(matiere2)
     matieres2.appendChild(matiere3)
@@ -112,9 +112,9 @@ def make_xml():
     matieres3 = newdoc.createElement('Matieres')
     matieres3.setAttribute("nbre_matieres", "2")
     matiere1 = newdoc.createElement('Matiere')
-    matiere1.setAttribute("id_matiere", "PenTest")
+    matiere1.setAttribute("id_matiere", "10")
     matiere2 = newdoc.createElement('Matiere')
-    matiere2.setAttribute("id_matiere", "Forensic")
+    matiere2.setAttribute("id_matiere", "15")
     matieres3.appendChild(matiere1)
     matieres3.appendChild(matiere2)
     etu3.appendChild(matieres3)
@@ -130,9 +130,9 @@ def make_xml():
 if __name__ == '__main__':
     print "Authentication Server Started"
     httpd = HTTPServer(('localhost', 4242), SimpleHTTPRequestHandler)
-    #myDB = make_xml()
+    # myDB = make_xml()
     # print "iciciciciic"
     # me = etree.parse("auth.xml")
-    # print me.xpath('/EtudiantsIsncrits/Student[@id="1"]/@id_formation')
+    # print me.xpath('/EtudiantsIsncrits/Student[@id="7" and @id_formation="5"]/Matieres/Matiere[@id_matiere="20"]')
     # print "iciciciciic"
     httpd.serve_forever()
