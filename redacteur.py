@@ -16,6 +16,7 @@ def make_xml():
 
     newdocreponse = impl2.createDocument(None, "Reponse", None)
     newrootreponse = newdocreponse.documentElement
+    newrootreponse.setAttribute("type", "correction")
     newnodereponse = newdocreponse.createElement('Identifiant')
     idQuestionnaire = raw_input('Quelle id voulez vous mettre a ce questionnaire?')
     # QUE METTRE EN IDENTIFIANT?????????? mcomment mettre en place avec formation et matiere?
@@ -114,6 +115,6 @@ if __name__ == '__main__':
         #print param
         post_req = urllib2.Request(urlCorrection, param)
         response = urllib2.urlopen(post_req)
-        #print "a envoyer xml"
+        #   print "a envoyer xml"
 
     # si ok envoyer les réponses au gestionnaire QCM sinon ne rien faire
