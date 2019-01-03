@@ -7,7 +7,7 @@
 
 import urllib
 import urllib2
-
+import pika
 
 import xml.sax
 from xml.sax import saxutils
@@ -31,12 +31,22 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
 
     def startDocument(self):
         self.newrootreponse = self.newdocreponse.documentElement
-
+        a=idEtu
+        newnodecontenureponse3 = self.newdocreponse.createElement("Etudiant")
+        newnodecontenureponse3.setAttribute("id", idEtu)
+        self.newrootreponse.appendChild(newnodecontenureponse3)
         self.newnodecontenureponse = self.newdocreponse.createElement("contenu")
         pass
 
     def endDocument(self):
         # newrootreponse.appendChild(newnodecontenureponse)
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        channel = connection.channel()
+        channel.queue_declare(queue='xml')
+        channel.basic_publish(exchange='',
+                              routing_key='xml',
+                              body=self.newdocreponse.toprettyxml())
+        connection.close()
         print self.newdocreponse.toprettyxml()
         pass
 
