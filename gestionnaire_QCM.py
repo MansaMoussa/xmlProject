@@ -39,7 +39,30 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             #les donnees qui sont dans la variable data sera un dictionnaire,
             # prendre data pour la suite
             if str(data["type"][0])=="sendQuestionnaire":
-                print "faire verif questionnaire"
+                #   print "faire verif questionnaire"
+
+                xmla = data["xmldata"][0]
+                # print xmla
+                tree = ET.fromstring(xmla)
+                list = tree.find(".//Questionnaire/[@id]").attrib
+                id = list["id"]
+                if self.verificationQuestionnaire(id):
+                    print "creer fichier"
+                    fichier = open(id + ".xml", "a")
+                    fichier.write(xmla)
+                    fichier.close()
+                    self.send_header("Content-type", "text/html")
+
+                    self.end_headers()
+
+                    self.wfile.write("OK")
+                else:
+                    self.send_header("Content-type", "text/html")
+
+                    self.end_headers()
+                    self.wfile.write("KO")
+
+
             elif str(data["type"][0])=="authEtudiant":
                 print "\n******************************************************"
                 print "**** THE SERVER IS WAITING FOR THE AUTHENTICATION ****"
