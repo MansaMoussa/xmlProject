@@ -118,14 +118,35 @@ if __name__ == '__main__':
     response = urllib2.urlopen(post_req)
     response_data = response.read()
 
-    if not not response_data:
+    if (str(response_data)!="KO") and str(response_data.split(' ')[0]).isdigit() :
         print "Authentication succeded"
         print response_data
         # A list that contains the id of the qcm and the id of the matiere
         list_response_received = response_data
-        parser = xml.sax.make_parser()
-        parser.setContentHandler(InkscapeSvgHandler())
-        parser.parse(open("1.xml", "r"))
+        qcm_choix = ""
+        matiere_choix = ""
+
+        # if(len(list_response_received)==1) and (str(response_data)!="KO"):
+        #     print "Vous avez reçu une propostions de QCM"
+        #     tmp = list_response_received.spli(;)[0]
+        #     qcm_choix = str(tmp.split()[0])
+        #     matiere_choix = str(tmp.split()[1])
+        # else:
+        for i in range(list_response_received.count(';')):
+            tmp = list_response_received.split(';')[i]
+            print tmp
+            qcm_choix = str(tmp.split()[0])
+            matiere_choix = str(tmp.split()[1])
+            print "Vous avez la possibilité de choisir le QCM ayant l'ID "+qcm_choix+" correspondant à la matière "+matiere_choix
+
+        qcm_choix = raw_input('Veuillez choisir l\'ID du QCM souhaitez faire : ')
+        #matiere_choix = raw_input('Veuillez choisir l\'ID de la matière : ')
+
+
+
+        # parser = xml.sax.make_parser()
+        # parser.setContentHandler(InkscapeSvgHandler())
+        # parser.parse(open("1.xml", "r"))
     elif (str(response_data)=="KO"):
         print "Authentication failed"
     else :
