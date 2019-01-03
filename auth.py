@@ -5,16 +5,14 @@
 @author: MansaMoussa
 '''
 
-import urllib
 import xml.sax
+from lxml import etree
+import xml.etree.ElementTree as ET
 from xml.dom.minidom import getDOMImplementation
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from urlparse import parse_qs
 import urllib
 import urllib2
-import xml.sax
-from xml.dom.minidom import getDOMImplementation
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -30,34 +28,40 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers["Content-Length"])
         post_data = self.rfile.read(content_length)
         data = parse_qs(post_data[0:])
+        myDB = make_xml()
+        myfile = etree.parse("auth.xml")
+
 
 
         if str(data["type"][0])=="authEtudiant":
             print "\n*******************************************************"
             print "**** THE SERVER START CHECKING THE AUTHENTICATION ****\n"
             print "*******************************************************\n"
-            print "The ID ",
-            print data["StudentID"],
-            print " EXIST"
-            print "The PASSWORD ",
-            print data["StudentPWD"],
-            print " EXIST"
-            studentID = int(data["StudentID"][0])
-            studentPWD = data["StudentPWD"][0]
-            print "#########################################"
+            #print myfile.xpath('/EtudiantsIsncrits/Student[@id='+str(data["StudentID"][0])+' or @pwd='+str(data["StudentPWD"][0])+']')
             # Envoie de la demande d'autentification au serveur dédié
-            if True:
-                post_dict = {'type': "authAnswer", 'studentSubscription': "True"}
-                param = urllib.urlencode(post_dict)
-                post_req = urllib2.Request(url, param)
-                response = urllib2.urlopen(post_req)
+            #if not not myfile.xpath('/EtudiantsIsncrits/Student[@id='+str(data["StudentID"][0])+']/@pwd='+str(data["StudentPWD"][0])+']'):
+            if not (not myfile.xpath('/EtudiantsIsncrits/Student[@id='+str(data["StudentID"][0])+']')) and not myfile.xpath('/EtudiantsIsncrits/Student[@pwd='+str(data["StudentPWD"][0])+']'):
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                #id formation mat1 mat2 ...
+                #self.wfile.write(str(data["StudentID"][0])+" "+myfile.xpath('/EtudiantsIsncrits/Student[@id_formation]')+" "+mat)
+                self.wfile.write("OK")
+                print "The ID ",
+                print data["StudentID"],
+                print " AND The PASSWORD ",
+                print data["StudentPWD"],
+                print " EXIST"
             else :
-                post_dict = {'type': "authAnswer", 'studentSubscription': "False"}
-                param = urllib.urlencode(post_dict)
-                post_req = urllib2.Request(url, param)
-                response = urllib2.urlopen(post_req)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                self.wfile.write("KO")
+                print "The ID ",
+                print data["StudentID"],
+                print " OR The PASSWORD ",
+                print data["StudentPWD"],
+                print " DOES NOT EXIST"
 
-
+            print "#########################################"
 
 def make_xml():
     impl = getDOMImplementation()
@@ -90,12 +94,13 @@ def make_xml():
     newroot.appendChild(etu3)
 
     print newdoc.toprettyxml()
-
+    myfile = open("auth.xml", "w")
+    myfile.write(newdoc.toprettyxml())
     return newdoc.toprettyxml()
 
 
 if __name__ == '__main__':
     print "Authentication Server Started"
     httpd = HTTPServer(('localhost', 4242), SimpleHTTPRequestHandler)
-    myDB = make_xml()
+    #myDB = make_xml()
     httpd.serve_forever()
