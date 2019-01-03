@@ -37,13 +37,20 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             print "\n*******************************************************"
             print "**** THE SERVER START CHECKING THE AUTHENTICATION ****\n"
             print "*******************************************************\n"
-            print myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]').values()
+
             # Envoie de la demande d'autentification au serveur dédié
             if not not myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]'):
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
                 #id formation mat1 mat2 ...
-                self.wfile.write(str(data["StudentID"][0])+" "+myfile.xpath('/EtudiantsIsncrits/Student[@id_formation]')+" "+mat)
+                id_formation = myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"]/@id_formation')
+                nbre_matieres = myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"]/Matieres/@nbre_matieres')
+                id_matieres = ""
+                id_matiere = myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"]/Matieres/Matiere/@id_matiere')
+                for i in range(int(nbre_matieres[0])):
+                    id_matieres = id_matieres+str(id_matiere[i])+" "
+                print id_matieres
+                self.wfile.write(str(data["StudentID"][0])+" "+str(id_formation[0])+" "+id_matieres)
                 #self.wfile.write("OK")
                 print "The ID ",
                 print data["StudentID"],
@@ -72,21 +79,45 @@ def make_xml():
     etu1.setAttribute("id", "1")
     etu1.setAttribute("pwd", "topSecret")
     etu1.setAttribute("id_formation", "3")
-    etu1.setAttribute("id_matiere", "PenTest")
+    matieres1 = newdoc.createElement('Matieres')
+    matieres1.setAttribute("nbre_matieres", "1")
+    matiere1 = newdoc.createElement('Matiere')
+    matiere1.setAttribute("id_matiere", "PenTest")
+    matieres1.appendChild(matiere1)
+    etu1.appendChild(matieres1)
     newroot.appendChild(etu1)
 
     etu2 = newdoc.createElement('Student')
     etu2.setAttribute("id", "7")
     etu2.setAttribute("pwd", "Secretdefense")
     etu2.setAttribute("id_formation", "5")
-    etu2.setAttribute("id_matiere", "Network")
+    matieres2 = newdoc.createElement('Matieres')
+    matieres2.setAttribute("nbre_matieres", "3")
+    matiere1 = newdoc.createElement('Matiere')
+    matiere1.setAttribute("id_matiere", "Forensic")
+    matiere2 = newdoc.createElement('Matiere')
+    matiere2.setAttribute("id_matiere", "Network")
+    matiere3 = newdoc.createElement('Matiere')
+    matiere3.setAttribute("id_matiere", "PenTest")
+    matieres2.appendChild(matiere1)
+    matieres2.appendChild(matiere2)
+    matieres2.appendChild(matiere3)
+    etu2.appendChild(matieres2)
     newroot.appendChild(etu2)
 
     etu3 = newdoc.createElement('Student')
     etu3.setAttribute("id", "42")
     etu3.setAttribute("pwd", "gr4ndR3ims")
     etu3.setAttribute("id_formation", "3")
-    etu3.setAttribute("id_matiere", "PenTest")
+    matieres3 = newdoc.createElement('Matieres')
+    matieres3.setAttribute("nbre_matieres", "2")
+    matiere1 = newdoc.createElement('Matiere')
+    matiere1.setAttribute("id_matiere", "PenTest")
+    matiere2 = newdoc.createElement('Matiere')
+    matiere2.setAttribute("id_matiere", "Forensic")
+    matieres3.appendChild(matiere1)
+    matieres3.appendChild(matiere2)
+    etu3.appendChild(matieres3)
     newroot.appendChild(etu3)
 
     print newdoc.toprettyxml()
@@ -99,9 +130,9 @@ def make_xml():
 if __name__ == '__main__':
     print "Authentication Server Started"
     httpd = HTTPServer(('localhost', 4242), SimpleHTTPRequestHandler)
-    # myDB = make_xml()
+    #myDB = make_xml()
     # print "iciciciciic"
     # me = etree.parse("auth.xml")
-    # print me.xpath('/EtudiantsIsncrits/Student[@id="1"][@pwd="topSecret"]')
+    # print me.xpath('/EtudiantsIsncrits/Student[@id="1"]/@id_formation')
     # print "iciciciciic"
     httpd.serve_forever()
