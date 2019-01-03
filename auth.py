@@ -37,10 +37,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             print "\n*******************************************************"
             print "**** THE SERVER START CHECKING THE AUTHENTICATION ****\n"
             print "*******************************************************\n"
-            #print myfile.xpath('/EtudiantsIsncrits/Student[@id='+str(data["StudentID"][0])+' or @pwd='+str(data["StudentPWD"][0])+']')
+            print myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]')
             # Envoie de la demande d'autentification au serveur dédié
-            #if not not myfile.xpath('/EtudiantsIsncrits/Student[@id='+str(data["StudentID"][0])+']/@pwd='+str(data["StudentPWD"][0])+']'):
-            if not (not myfile.xpath('/EtudiantsIsncrits/Student[@id='+str(data["StudentID"][0])+']')) and not myfile.xpath('/EtudiantsIsncrits/Student[@pwd='+str(data["StudentPWD"][0])+']'):
+            if not not myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]'):
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
                 #id formation mat1 mat2 ...
@@ -70,7 +69,6 @@ def make_xml():
     newroot = newdoc.documentElement
     # creation de la base de donnée des étudiants inscrits
     etu1 = newdoc.createElement('Student')
-
     etu1.setAttribute("id", "1")
     etu1.setAttribute("pwd", "topSecret")
     etu1.setAttribute("id_formation", "3")
@@ -78,7 +76,6 @@ def make_xml():
     newroot.appendChild(etu1)
 
     etu2 = newdoc.createElement('Student')
-
     etu2.setAttribute("id", "7")
     etu2.setAttribute("pwd", "Secretdefense")
     etu2.setAttribute("id_formation", "5")
@@ -86,7 +83,6 @@ def make_xml():
     newroot.appendChild(etu2)
 
     etu3 = newdoc.createElement('Student')
-
     etu3.setAttribute("id", "42")
     etu3.setAttribute("pwd", "gr4ndR3ims")
     etu3.setAttribute("id_formation", "3")
@@ -96,11 +92,16 @@ def make_xml():
     print newdoc.toprettyxml()
     myfile = open("auth.xml", "w")
     myfile.write(newdoc.toprettyxml())
+
     return newdoc.toprettyxml()
 
 
 if __name__ == '__main__':
     print "Authentication Server Started"
     httpd = HTTPServer(('localhost', 4242), SimpleHTTPRequestHandler)
-    #myDB = make_xml()
+    # myDB = make_xml()
+    # print "iciciciciic"
+    # me = etree.parse("auth.xml")
+    # print me.xpath('/EtudiantsIsncrits/Student[@id="1"][@pwd="topSecret"]')
+    # print "iciciciciic"
     httpd.serve_forever()
