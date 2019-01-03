@@ -20,12 +20,9 @@ if __name__ == '__main__':
     param = urllib.urlencode(post_dict)
     post_req = urllib2.Request(url, param)
     response = urllib2.urlopen(post_req)
-
-    #post_req = urllib2.Request(url, "StudentID "+str(idEtu))
-    #response = urllib2.urlopen(post_req)
-
-
-    #post_req = urllib2.Request(url, "StudentPWD "+str(pwdEtu))
-    #response = urllib2.urlopen(post_req)
-
+    response_data = response.read()
+    if(str(response_data)=="OK"):
+        print "Authentication succeded"
+    else :
+        print "Authentication failed"
     response.close()

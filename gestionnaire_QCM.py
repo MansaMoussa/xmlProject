@@ -48,8 +48,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 print "ID : ",
                 print data["StudentID"][0]
                 print "PASSWORD : ",
-                taillePWD = len(data["StudentPWD"][0])
-                print "*"*taillePWD
+                print "*"*len(data["StudentPWD"][0])
+
                 studentID = int(data["StudentID"][0])
                 studentPWD = data["StudentPWD"][0]
 
@@ -58,11 +58,17 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 param = urllib.urlencode(post_dict)
                 post_req = urllib2.Request(url, param)
                 response = urllib2.urlopen(post_req)
-            elif str(data["type"][0])=="authAnswer" :
-                if(data["studentSubscription"][0]=="True"):
-                    print "You'll receive your QCM"
+                response_data = response.read()
+                print response_data
+                if(str(response_data)=="OK"):
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                    self.wfile.write("OK")
                 else :
-                    print "You're not subscribed"
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                    self.wfile.write("KO")
+                response.close()
                 print "###### Authentication Ended ######"
             else:
                 print "Ne rien faire"
