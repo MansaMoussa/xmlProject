@@ -6,8 +6,11 @@
 '''
 import os
 import glob
+import threading
+
+import pika
 from lxml import etree
-from xml.dom.minidom import getDOMImplementation
+from xml.dom.minidom import getDOMImplementation, parseString
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from urlparse import parse_qs
 import urllib
@@ -126,7 +129,69 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         return True
 
+
+class Thread(threading.Thread):
+
+    def __init__(self, i):
+        super(Thread, self).__init__()
+        self.start()
+        i = i
+
+    def run(self):
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
+
+        channel.queue_declare(queue='result')
+
+        def callback(ch, method, properties, body):
+            print(" [x] Received %r" % body)
+            try:
+                fichier = open("score.xml", "r")
+            except IOError:
+                fichier = open("score.xml", "w")
+                fichier.write("<?xml version=\"1.0\" ?>\n<Resultat>\n</Resultat>")
+                fichier.close()
+                fichier = open("score.xml", "r")
+             #   print("Wrong file or file path")
+
+
+            dom1 = parseString(fichier.read())
+            fichier.close()
+
+            newrootreponse = dom1.documentElement
+            node = dom1.createElement("Etudiant")
+
+            dom2 = parseString(body)
+            name = dom2.getElementsByTagName("Etudiant")[0]
+
+
+            node.setAttribute("id", name.getAttribute("id"))
+            node.setAttribute("idQuestionnaire", name.getAttribute("idQuestionnaire"))
+            node.setAttribute("score", name.getAttribute("score"))
+
+
+            newrootreponse.insertBefore(node,None)
+
+
+            fichier = open("score.xml", "w")
+
+            dom_string = dom1.toprettyxml(encoding='UTF-8')
+            dom_string = os.linesep.join([s for s in dom_string.splitlines() if s.strip()])
+            fichier.write(dom_string)
+            fichier.close()
+
+
+        channel.basic_consume(callback,
+                              queue='result',
+                              no_ack=True)
+
+        print(' [*] Waiting for messages. To exit press CTRL+C')
+
+        channel.start_consuming()
+
+
 if __name__ == '__main__':
     print "Gestionnaire QCM Server Started"
+    th1 = Thread(10)
     httpd = HTTPServer(('localhost', 8282), SimpleHTTPRequestHandler)
     httpd.serve_forever()
