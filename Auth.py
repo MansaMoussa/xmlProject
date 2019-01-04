@@ -47,9 +47,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 id_matiere = myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"]/Matieres/Matiere/@id_matiere')
                 for i in range(int(nbre_matieres[0])):
                     id_matieres = id_matieres+str(id_matiere[i])+" "
-                #print id_matieres
+
                 self.wfile.write(str(data["StudentID"][0])+" "+str(id_formation[0])+" "+id_matieres)
-                #self.wfile.write("OK")
                 print "The ID ",
                 print data["StudentID"],
                 print " AND The PASSWORD ",
