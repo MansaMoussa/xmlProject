@@ -140,18 +140,19 @@ if __name__ == '__main__':
             print "####################################\n"
 
 
-
+        qcm_choix_list = []
         for i in range(int(list_response_received.count(';'))):
             tmp = list_response_received.split(';')[i]
             qcm_choix = str(tmp.split()[0])
             matiere_choix = str(tmp.split()[1])
             print "Vous avez la possibilité de choisir le QCM ayant l'ID "+qcm_choix+" correspondant à la matière "+matiere_choix
+            qcm_choix_list.append(qcm_choix)
+
 
         check_file = True
-        qcm_choix = ""
         while(check_file):
             qcm_choix = str(raw_input('Veuillez choisir l\'ID du QCM que souhaitez faire : '))
-            if os.path.exists("./"+qcm_choix+".xml"): # pas du tout secure
+            if qcm_choix in qcm_choix_list :
                 check_file=False
         #init et lancement du parser sur le questionnaire qcm
         parser = xml.sax.make_parser()
