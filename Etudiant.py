@@ -44,7 +44,8 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
                               routing_key='xml',
                               body=self.newdocreponse.toprettyxml())
         connection.close()
-        print self.newdocreponse.toprettyxml()
+        print "Vous avez finis votre questionnaire et votre copie a été envoyé pour évaluation"
+        #print self.newdocreponse.toprettyxml()
         pass
 
     def startElement(self, name, attrs):

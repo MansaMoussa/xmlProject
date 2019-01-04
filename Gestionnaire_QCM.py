@@ -40,11 +40,11 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 id = list["id"]
                 #verification de la non existance du fichier avec l'id donné par le redacteur
                 if self.verificationQuestionnaire(id):
-                    print "Créer fichier"
+
                     fichier = open(id + ".xml", "a")
                     fichier.write(xmla)
                     fichier.close()
-
+                    print "Un nouveau questionnaire a été créé"
                     self.send_header("Content-type", "text/html")
                     self.end_headers()
                     self.wfile.write("OK")
@@ -179,7 +179,7 @@ class Thread(threading.Thread):
             dom_string = os.linesep.join([s for s in dom_string.splitlines() if s.strip()])
             fichier.write(dom_string)
             fichier.close()
-
+            print "Le résultat de l'étudiant ayant l'id "+ str(name.getAttribute("id"))+" a été enregistré"
 
         channel.basic_consume(callback,
                               queue='result',

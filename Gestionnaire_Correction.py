@@ -72,7 +72,7 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
         newnodecontenureponse3.setAttribute("idQuestionnaire", self.numId)
         newrootreponse.appendChild(newnodecontenureponse3)
 
-        print newdocreponse.toprettyxml()
+        print "La copie de l'etudiant ayant l\"id "+str(self.idEtu)+" a été traité"
         # newrootreponse.appendChild(newnodecontenureponse)
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
         channel = connection.channel()

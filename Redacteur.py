@@ -115,7 +115,7 @@ if __name__ == '__main__':
         param = urllib.urlencode(post_dict)
         post_req = urllib2.Request(urlCorrection, param)
         response = urllib2.urlopen(post_req)
-        #   print "a envoyer xml"
+        print "Le questionnaire a bien été enregistré."
     else:
-        print "L'ID envoyé existe déjà dans notre base de donnée"
+        print "L'ID envoyé existe déjà dans notre base de donnée."
     # si ok envoyer les réponses au gestionnaire QCM sinon ne rien faire
