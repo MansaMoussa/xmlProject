@@ -37,6 +37,13 @@ def make_xml():
     # debut de la boucle while de question
     cpt = 0;
     nbquestion = int(raw_input('Combien de question voulez vous?'))
+    while True:
+        # Ton code…
+        if nbquestion > 0:
+            break
+        else:
+            nbquestion = int(raw_input('Réponse non approprié, combien de question voulez vous?'))
+
     contenuNodeReponse = documentQuestionnaire.createElement("contenu")
 
     while nbquestion > cpt:
@@ -53,7 +60,14 @@ def make_xml():
         questionNodeQuestionnaire.appendChild(newnode3)
 
         cpt = cpt + 1
+
         nbReponse = int(raw_input('Combien de réponse voulez vous ?'))
+        while True:
+            # Ton code…
+            if nbReponse > 0:
+                break
+            else:
+                nbReponse = int(raw_input('Réponse non approprié, combien de réponse voulez vous ?'))
         cptReponse = 0
 
         while nbReponse > cptReponse:
@@ -96,5 +110,6 @@ if __name__ == '__main__':
         post_req = urllib2.Request(urlCorrection, param)
         response = urllib2.urlopen(post_req)
         #   print "a envoyer xml"
-
+    else:
+        print "L'id envoyé existe déjà dans notre base de donnée"
     # si ok envoyer les réponses au gestionnaire QCM sinon ne rien faire
