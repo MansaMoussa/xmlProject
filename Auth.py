@@ -5,12 +5,14 @@
 @author: MansaMoussa
 '''
 
-
+import xml.sax
 from lxml import etree
+import xml.etree.ElementTree as ET
 from xml.dom.minidom import getDOMImplementation
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from urlparse import parse_qs
-
+import urllib
+import urllib2
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
