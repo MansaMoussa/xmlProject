@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<QCM>
+	<Questionnaire id="1" id_formation="3" id_matiere="20">
+		<Question id="0">
+			<Enonce>1+1?</Enonce>
+			<choix id="0">0</choix>
+			<choix id="1">2</choix>
+			<choix id="2">3</choix>
+		</Question>
+		<Question id="1">
+			<Enonce>5*5</Enonce>
+			<choix id="0">25</choix>
+			<choix id="1">-10</choix>
+		</Question>
+		<Question id="2">
+			<Enonce>1+1</Enonce>
+			<choix id="0">la réponse a</choix>
+			<choix id="1">2</choix>
+		</Question>
+	</Questionnaire>
+</QCM>

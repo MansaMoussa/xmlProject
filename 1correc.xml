@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<Reponse type="correction">
+	<Identifiant>1</Identifiant>
+	<contenu>
+		<Question id="0" rep="1"/>
+		<Question id="1" rep="0"/>
+		<Question id="2" rep="1"/>
+	</contenu>
+</Reponse>
