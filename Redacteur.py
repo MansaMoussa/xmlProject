@@ -18,7 +18,7 @@ def make_xml():
     rootNodeReponse = documentCopieReponse.documentElement
     rootNodeReponse.setAttribute("type", "correction")
     idNodeReponse = documentCopieReponse.createElement('Identifiant')
-    idQuestionnaire = raw_input('Quelle id voulez vous mettre a ce questionnaire?')
+    idQuestionnaire = raw_input('Quelle ID voulez vous mettre a ce questionnaire? ')
 
     idQuestionnaireText = documentCopieReponse.createTextNode(idQuestionnaire)
     idNodeReponse.appendChild(idQuestionnaireText)
@@ -29,8 +29,8 @@ def make_xml():
     rootNodeQuestionnaire = documentQuestionnaire.documentElement
     NodeQuestionnaire = documentQuestionnaire.createElement('Questionnaire')
     NodeQuestionnaire.setAttribute("id", idQuestionnaire)
-    NodeQuestionnaire.setAttribute("id_formation",  raw_input('Quelle id de formation voulez vous mettre pour ce questionnaire?'))
-    NodeQuestionnaire.setAttribute("id_matiere", raw_input('Quelle id de matiere voulez vous mettre pour ce questionnaire?') )
+    NodeQuestionnaire.setAttribute("id_formation",  raw_input('Quelle ID de formation voulez vous mettre pour ce questionnaire? '))
+    NodeQuestionnaire.setAttribute("id_matiere", raw_input('Quelle ID de matiere voulez vous mettre pour ce questionnaire? ') )
     rootNodeQuestionnaire.appendChild(NodeQuestionnaire)
 
     try:
@@ -39,7 +39,7 @@ def make_xml():
             if nbquestion > 0:
                 break
             else:
-                nbquestion = int(raw_input('Réponse non approprié, combien de question voulez vous?'))
+                nbquestion = int(raw_input('Réponse non approprié, combien de question voulez vous? '))
     except ValueError:
        print "Veuillez choisir un nombre pour le prochain test"
        exit(-1)
@@ -91,7 +91,7 @@ def make_xml():
             questionNodeQuestionnaire.appendChild(choixNode)
 
         # demande de bonne reponse et mise en place de la reponse dans le bon endroit
-        questionNodeReponse.setAttribute("rep", raw_input('Quelle était l\'id de la bonne reponse? (La première réponse -> id = 0, la deuxième réponse -> id = 1) '))
+        questionNodeReponse.setAttribute("rep", raw_input('Quelle était l\'ID de la bonne reponse? (La première réponse -> ID = 0, la deuxième réponse -> ID = 1) '))
         contenuNodeReponse.appendChild(questionNodeReponse)
         NodeQuestionnaire.appendChild(questionNodeQuestionnaire)
     rootNodeReponse.appendChild(contenuNodeReponse)
@@ -117,5 +117,5 @@ if __name__ == '__main__':
         response = urllib2.urlopen(post_req)
         #   print "a envoyer xml"
     else:
-        print "L'id envoyé existe déjà dans notre base de donnée"
+        print "L'ID envoyé existe déjà dans notre base de donnée"
     # si ok envoyer les réponses au gestionnaire QCM sinon ne rien faire

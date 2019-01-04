@@ -40,7 +40,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 id = list["id"]
                 #verification de la non existance du fichier avec l'id donné par le redacteur
                 if self.verificationQuestionnaire(id):
-                    print "creer fichier"
+                    print "Créer fichier"
                     fichier = open(id + ".xml", "a")
                     fichier.write(xmla)
                     fichier.close()
@@ -102,13 +102,13 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             elif str(data["type"][0])=="info_score":
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                #self.wfile.write("KO")
+
+                studentID = str(data["StudentID"][0])
                 scores_student = ""
                 if os.path.exists("./score.xml"):
                     myScorefile = etree.parse("score.xml")
-                    id_qcm = myScorefile.xpath('./Etudiant[@id="7"]/@idQuestionnaire')
-                    id_score = myScorefile.xpath('./Etudiant[@id="7"]/@score')
-
+                    id_qcm = myScorefile.xpath('/Resultat/Etudiant[@id=\"'+studentID+'\"]/@idQuestionnaire')
+                    id_score = myScorefile.xpath('/Resultat/Etudiant[@id=\"'+studentID+'\"]/@score')
                     if not not id_qcm :
                         for i in range(int(len(id_qcm))):
                             scores_student=scores_student+str(id_qcm[i])+" "+str(id_score[i])+";"

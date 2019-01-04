@@ -34,7 +34,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         # reception de la correction et enregistrement dans un fichier
         if data["type"][0] == "sendCorrection":
-            print "creer fichier correct"
+            print "The correct answers file is created"
             xmla = data["xmldata"][0]
 
             tree = ET.fromstring(xmla)

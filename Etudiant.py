@@ -8,6 +8,7 @@
 import urllib
 import urllib2
 import pika
+import os
 import time
 import xml.sax
 from xml.sax import saxutils
@@ -109,7 +110,7 @@ if __name__ == '__main__':
         qcm_choix = ""
         matiere_choix = ""
 
-        info_score = str(raw_input('souhaitez-vous connaître vos scores précedents ? :[Oui] ou [Non] '))
+        info_score = str(raw_input('Souhaitez-vous connaître vos scores précedents ? :[Oui] ou [Non] '))
 
         if(info_score=="Oui" or info_score=="O" or info_score=="oui" or info_score=="o" or info_score=="Yes" or info_score=="yes" or info_score=="y"):
             post_dict = {'type': "info_score", 'StudentID': str(idEtu)}
@@ -126,7 +127,6 @@ if __name__ == '__main__':
             print "####################################"
             print "############ SCOREBOARD ############"
             print "####################################"
-            print response_data
             if str(response_data)!="Vous n'avez fait aucun QCM :(" or str(response_data)!="Aucun QCM n'a encore été effectué :)":
                 for i in range(int(response_data.count(';'))):
                     tmp = response_data.split(';')[i]
@@ -146,7 +146,12 @@ if __name__ == '__main__':
             matiere_choix = str(tmp.split()[1])
             print "Vous avez la possibilité de choisir le QCM ayant l'ID "+qcm_choix+" correspondant à la matière "+matiere_choix
 
-        qcm_choix = raw_input('Veuillez choisir l\'ID du QCM que souhaitez faire : ')
+        check_file = True
+        qcm_choix = ""
+        while(check_file):
+            qcm_choix = str(raw_input('Veuillez choisir l\'ID du QCM que souhaitez faire : '))
+            if os.path.exists("./"+qcm_choix+".xml"): # pas du tout secure
+                check_file=False
         #init et lancement du parser sur le questionnaire qcm
         parser = xml.sax.make_parser()
         parser.setContentHandler(InkscapeSvgHandler())
@@ -154,8 +159,8 @@ if __name__ == '__main__':
     elif (str(response_data)=="KO"):
         print "Authentication failed"
     else :
-        print "/!\\ Aucun QCM destiné à vous n'a été créé ! :( /!\\"
-        info_score = str(raw_input('souhaitez-vous connaître vos scores précedents ? :[Oui] ou [Non] '))
+        print "\t/!\\ Aucun QCM destiné à vous n'a été créé ! :( /!\\"
+        info_score = str(raw_input('Souhaitez-vous connaître vos scores précedents ? :[Oui] ou [Non] '))
 
         if(info_score=="Oui" or info_score=="O" or info_score=="oui" or info_score=="o" or info_score=="Yes" or info_score=="yes" or info_score=="y"):
             post_dict = {'type': "info_score", 'StudentID': str(idEtu)}
@@ -179,7 +184,7 @@ if __name__ == '__main__':
                     id_score = str(tmp.split()[1])
                     print "Vous avez obtenu un score de "+id_score+" au QCM ayant l'ID "+id_qcm
             else :
-                print response_data
+                print "\t"+response_data
             time.sleep(1)
             print "####################################\n"
 
