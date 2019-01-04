@@ -120,12 +120,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(scores_student)
             else :
                 print "Ne rien faire"
-
-<<<<<<< HEAD:gestionnaire_QCM.py
-=======
-
+                
     #fonction permettant de verifier si le questionnaire existe déjà avec l'id donné
->>>>>>> c7670181c8668cdb4510b57fda47f9671ad23c12:Gestionnaire_QCM.py
     def verificationQuestionnaire(self,id):
         for i in os.listdir(os.getcwd()):
             if i == (str(id)+".xml"):
