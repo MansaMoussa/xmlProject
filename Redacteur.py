@@ -68,12 +68,12 @@ def make_xml():
 
 
         try:
-            nbReponse = int(raw_input('Combien de réponse voulez vous ?'))
+            nbReponse = int(raw_input('Combien de réponse voulez vous ? '))
             while True:
                 if nbReponse > 0:
                     break
                 else:
-                    nbReponse = int(raw_input('Réponse non approprié, combien de réponse voulez vous ?'))
+                    nbReponse = int(raw_input('Réponse non approprié, combien de réponse voulez vous ? '))
         except ValueError:
             print "Veuillez choisir un nombre pour le prochain test"
             exit(-1)
@@ -91,7 +91,7 @@ def make_xml():
             questionNodeQuestionnaire.appendChild(choixNode)
 
         # demande de bonne reponse et mise en place de la reponse dans le bon endroit
-        questionNodeReponse.setAttribute("rep", raw_input('Quelle était l\'id de la bonne reponse? (La première réponse est l\id est égale à 0, la deuxième réponse l\'id est égale à  1'))
+        questionNodeReponse.setAttribute("rep", raw_input('Quelle était l\'id de la bonne reponse? (La première réponse -> id = 0, la deuxième réponse -> id = 1) '))
         contenuNodeReponse.appendChild(questionNodeReponse)
         NodeQuestionnaire.appendChild(questionNodeQuestionnaire)
     rootNodeReponse.appendChild(contenuNodeReponse)
