@@ -19,11 +19,7 @@ from lxml import etree
 from pika import callback
 
 
-
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-
-
-
 
     def do_GET(self):
         self.send_response(200)
@@ -35,10 +31,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers["Content-Length"])
         post_data = self.rfile.read(content_length)
         data = parse_qs(post_data[0:])
-        print data
-        print type(data)
-        #reception de la correction et enregistrement a faire dans un fichier
-        #faire la difference sur qui envoie le fichier pour savoir l'action a faire
+
+        # reception de la correction et enregistrement dans un fichier
         if data["type"][0] == "sendCorrection":
             print "creer fichier correct"
             xmla = data["xmldata"][0]
@@ -51,20 +45,19 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             fichier.write(xmla)
             fichier.close()
 
+            # print xml.dom.minidom.parseString(post_data).toxml()
 
-            #print xml.dom.minidom.parseString(post_data).toxml()
 
-
+# Classe qui va permettre la gestion de la correction d'une copie
 class InkscapeSvgHandler(xml.sax.ContentHandler):
-    id=False
-    numId=""
-    fichier=""
-    #contenuFichier=""
-    score=0
-    total=0
-    idEtu=""
-    def startDocument(self):
+    id = False #permet de detecter le moment ou le programme recupera l'id du questionnaire
+    numId = ""# l'id du questionnaire
+    fichier = "" #le fichier de correction
+    score = 0 #le score de l'étudiant
+    total = 0 #le nombre total de question
+    idEtu = "" #l'id de l'etudiant
 
+    def startDocument(self):
         pass
 
     def endDocument(self):
@@ -75,11 +68,10 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
         newrootreponse = newdocreponse.documentElement
         newnodecontenureponse3 = newdocreponse.createElement("Etudiant")
         newnodecontenureponse3.setAttribute("id", self.idEtu)
-        newnodecontenureponse3.setAttribute("score", str(self.score)+"/"+str(self.total))
+        newnodecontenureponse3.setAttribute("score", str(self.score) + "/" + str(self.total))
         newnodecontenureponse3.setAttribute("idQuestionnaire", self.numId)
         newrootreponse.appendChild(newnodecontenureponse3)
 
-        #<student  id="idStudent" score="score/total" idQuestionnaire="numId">
         print newdocreponse.toprettyxml()
         # newrootreponse.appendChild(newnodecontenureponse)
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -89,27 +81,25 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
                               routing_key='result',
                               body=newdocreponse.toprettyxml())
         connection.close()
-        print "fin"
         pass
 
     def startElement(self, name, attrs):
         if name == "Etudiant":
-            self.idEtu=attrs.getValue("id")
+            self.idEtu = attrs.getValue("id")
         if name == "Identifiant":
-            self.id=True
-            #regarder dans charater l'id
-            #prendre l'identifiant pour pouvoir ouvrir le bon fichier
+            # detecte que le prochain charactere sera l'id du questionnaire
+            self.id = True
         if name == "Question":
-            idQuestion=attrs.getValue("id")
+            #gestion de la correction
+            idQuestion = attrs.getValue("id")
             idRepCopie = attrs.getValue("rep")
-            #faire requete xpath et verifier la repcopie et repcorrection
-            reponse=self.fichier.xpath("./contenu/Question[@id=\'"+idQuestion+"\' and @rep=\'"+idRepCopie+"\']")
-            if reponse!=[]:
-                self.score=self.score+1
+            # faire requete xpath et verifier la repcopie et repcorrection
+            reponse = self.fichier.xpath(
+                "./contenu/Question[@id=\'" + idQuestion + "\' and @rep=\'" + idRepCopie + "\']")
+            if reponse != []:
+                self.score = self.score + 1
 
-            self.total=self.total+1
-            print "test"
-
+            self.total = self.total + 1
 
     # print attrs
     def characters(self, content):
@@ -118,26 +108,20 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
         content = content.strip('\t')
         if len(content) > 0:
             if id:
-                self.id=False
-                self.numId=content
-                print content
-                self.fichier = etree.parse(self.numId+"correc.xml")
+                self.id = False
+                self.numId = content
+                self.fichier = etree.parse(self.numId + "correc.xml")
 
 
-
-
-
+# Classe qui va être utilisé pour faire un thread pour la gestion du rabbitMQ
 class Thread(threading.Thread):
 
-    def __init__(self,i):
-        super(Thread,self).__init__()
+    def __init__(self):
+        super(Thread, self).__init__()
         self.start()
-        i=i
 
 
     def run(self):
-
-
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
 
@@ -145,28 +129,22 @@ class Thread(threading.Thread):
 
         def callback(ch, method, properties, body):
             print(" [x] Received %r" % body)
-            #gestion correction
-            print type(body)
-            parser = xml.sax.make_parser()
+            # gestion correction
             xml.sax.parseString(body, InkscapeSvgHandler())
-            #parser.setContentHandler(InkscapeSvgHandler())
-            #parser.parseString(body)
 
         channel.basic_consume(callback,
                               queue='xml',
                               no_ack=True)
 
-
-
-        print(' [*] Waiting for messages. To exit press CTRL+C')
+        print(' [*] Waiting for messages(RabbitMQ).')
 
         channel.start_consuming()
 
 
-
 if __name__ == '__main__':
-    print "Gestionnaire Correction Server Started"
-    th1 = Thread(10)
+    print "Gestionnaire Correction Server Started(HTTP)"
+    # creation d'un thread car 2 fonction bloquante(httpserver et rabbitmq)
+    th1 = Thread()
 
     httpd = HTTPServer(('127.0.0.1', 8383), SimpleHTTPRequestHandler)
     httpd.serve_forever()

@@ -16,21 +16,18 @@ from xml.dom.minidom import getDOMImplementation
 
 
 class InkscapeSvgHandler(xml.sax.ContentHandler):
-    enonce = False
 
-    #POUR POUVOIR LE DOM DANS LE SAX
+    #Creation des differente composante dom pour envoyer la copie de l'etudiant
     impl = getDOMImplementation()
     newdocreponse = impl.createDocument(None, "Reponse", None)
     newrootreponse = newdocreponse.documentElement
     newrootreponse.setAttribute("type", "copie")
     newnodereponse2 = None;
-    newrootreponse=None
     newnodecontenureponse=None
 
 
     def startDocument(self):
-        self.newrootreponse = self.newdocreponse.documentElement
-        a=idEtu
+        #creation de la balise etudiant pour sauvegarder l id de l etudiant
         newnodecontenureponse3 = self.newdocreponse.createElement("Etudiant")
         newnodecontenureponse3.setAttribute("id", idEtu)
         self.newrootreponse.appendChild(newnodecontenureponse3)
@@ -38,7 +35,7 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
         pass
 
     def endDocument(self):
-        # newrootreponse.appendChild(newnodecontenureponse)
+        #envoie de la copie a l'etudiant via rabbitMQ
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
         channel = connection.channel()
         channel.queue_declare(queue='xml')
@@ -50,53 +47,39 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
         pass
 
     def startElement(self, name, attrs):
-        # print "oui"
-        # print type(name)
-        # print type(attrs)
-
-        # prendre id questionnaire aussi
+        #Lecture de chaqua balise avec le parser sax
         if name == "Questionnaire":
-            # print "question"
-            # print attrs._attrs
             idQuestionnaire = attrs.getValue("id")
             print 'id Questionnaire :' + idQuestionnaire
-            # print idQuestionnaire
-            # mettre dans le DOM l'identifiant
             newnodereponse = self.newdocreponse.createElement('Identifiant')
             text = self.newdocreponse.createTextNode(idQuestionnaire)
             newnodereponse.appendChild(text)
             self.newrootreponse.appendChild(newnodereponse)
 
         if name == "Question":
+            #creation d'une balise question pour chaque question
             self.newnodereponse2 = self.newdocreponse.createElement("Question")
-            # newnodereponse2 = newdocreponse.createElement("Question")
-            # print "question"
-            # print attrs._attrs
             idQuestion = attrs.values()
             print 'id question :' + idQuestion[0]
             self.newnodereponse2.setAttribute("id", str(idQuestion[0]))
 
         if name == "choix":
+            #affichage de la reponse et de son text via characters(content)
             idReponse = attrs.values()
             print "id = " + idReponse[0] + " reponse=",
-            # self.characters(name)
 
-    # print attrs
 
     def endElement(self, name):
+        #a chaque question, demande a l'utilisateur de rentrer la réponse
         if name == "Question":
-            #print "fin de question"
             num = raw_input('Veuillez entrer l\'id de la reponse (0.1.2...)')
-            #print self.newrootreponse.toprettyxml()
             self.newnodereponse2.setAttribute("rep", num)
-            #print self.newrootreponse.toprettyxml()
             self.newnodecontenureponse.appendChild(self.newnodereponse2)
-            #print self.newrootreponse.toprettyxml()
             self.newrootreponse.appendChild(self.newnodecontenureponse)
-        # newnodereponse2 = newdocreponse.createElement("Question")
-        # newnodereponse2 = newdocreponse.createElement("Question")
+
 
     def characters(self, content):
+        #n'affiche que du text non vide
         content = content.strip('\n')
         content = saxutils.unescape(content)
         content = content.strip('\t')
@@ -143,6 +126,7 @@ if __name__ == '__main__':
             print "####################################"
             print "############ SCOREBOARD ############"
             print "####################################"
+            print response_data
             if str(response_data)!="Vous n'avez fait aucun QCM :(" or str(response_data)!="Aucun QCM n'a encore été effectué :)":
                 for i in range(int(response_data.count(';'))):
                     tmp = response_data.split(';')[i]
@@ -163,8 +147,7 @@ if __name__ == '__main__':
             print "Vous avez la possibilité de choisir le QCM ayant l'ID "+qcm_choix+" correspondant à la matière "+matiere_choix
 
         qcm_choix = raw_input('Veuillez choisir l\'ID du QCM que souhaitez faire : ')
-
-
+        #init et lancement du parser sur le questionnaire qcm
         parser = xml.sax.make_parser()
         parser.setContentHandler(InkscapeSvgHandler())
         parser.parse(open(qcm_choix+".xml", "r"))

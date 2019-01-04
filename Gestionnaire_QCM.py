@@ -11,12 +11,9 @@ import threading
 import pika
 from lxml import etree
 from xml.dom.minidom import getDOMImplementation, parseString
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from urlparse import parse_qs
 import urllib
 import urllib2
-import xml.sax
-from xml.dom.minidom import getDOMImplementation
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 import xml.etree.ElementTree as ET
 
@@ -35,19 +32,13 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             post_data = self.rfile.read(content_length)
             data = parse_qs(post_data[0:])
 
-            # print post_data
-            # print t["test"]
-            # print type(t["xmldata"][0])
-            # print xml.dom.minidom.parseString( t["xmldata"][0]).toxml()
-            # les donnees qui sont dans la variable data sera un dictionnaire,
-            # prendre data pour la suite
             if str(data["type"][0])=="sendQuestionnaire":
-                # print "faire verif questionnaire"
-
+                # reception du questionnaire envoyé par le redacteur
                 xmla = data["xmldata"][0]
                 tree = ET.fromstring(xmla)
                 list = tree.find(".//Questionnaire/[@id]").attrib
                 id = list["id"]
+                #verification de la non existance du fichier avec l'id donné par le redacteur
                 if self.verificationQuestionnaire(id):
                     print "creer fichier"
                     fichier = open(id + ".xml", "a")
@@ -130,6 +121,11 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             else :
                 print "Ne rien faire"
 
+<<<<<<< HEAD:gestionnaire_QCM.py
+=======
+
+    #fonction permettant de verifier si le questionnaire existe déjà avec l'id donné
+>>>>>>> c7670181c8668cdb4510b57fda47f9671ad23c12:Gestionnaire_QCM.py
     def verificationQuestionnaire(self,id):
         for i in os.listdir(os.getcwd()):
             if i == (str(id)+".xml"):
@@ -157,10 +153,15 @@ class Thread(threading.Thread):
             try:
                 fichier = open("score.xml", "r")
             except IOError:
+                #   le fichier n'existe pas encore(première utilisation)
                 fichier = open("score.xml", "w")
                 fichier.write("<?xml version=\"1.0\" ?>\n<Resultat>\n</Resultat>")
                 fichier.close()
                 fichier = open("score.xml", "r")
+<<<<<<< HEAD:gestionnaire_QCM.py
+=======
+
+>>>>>>> c7670181c8668cdb4510b57fda47f9671ad23c12:Gestionnaire_QCM.py
 
 
             dom1 = parseString(fichier.read())
@@ -193,7 +194,7 @@ class Thread(threading.Thread):
                               queue='result',
                               no_ack=True)
 
-        print(' [*] Waiting for messages. To exit press CTRL+C')
+        print(' [*] Waiting for messages(RabbitMQ)')
 
         channel.start_consuming()
 
