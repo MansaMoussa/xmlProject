@@ -108,18 +108,19 @@ if __name__ == '__main__':
     print "######/!\\ Authentification réquise avant de recevoir un QCM /!\\######"
 
 
-    idEtu = raw_input('Veuillez entrer votre numero etudiant : ')
-    pwdEtu = raw_input('Veuillez entrer votre password : ')
-    post_dict = {'type': "authEtudiant", 'StudentID': str(idEtu),'StudentPWD':str(pwdEtu)}
+    idEtu = str(raw_input('Veuillez entrer votre numero etudiant : '))
+    pwdEtu = str(raw_input('Veuillez entrer votre password : '))
+    if not idEtu.isdigit() :
+        idEtu = "0"
 
+    post_dict = {'type': "authEtudiant", 'StudentID': str(idEtu),'StudentPWD':str(pwdEtu)}
     param = urllib.urlencode(post_dict)
     post_req = urllib2.Request(url, param)
     response = urllib2.urlopen(post_req)
-    response_data = response.read()
+    response_data = str(response.read())
 
     if ((str(response_data)!="KO" and str(response_data.split(' ')[0]).isdigit()) or str(response_data)=="OK") :
         print "Authentication succeded"
-        #print response_data
         # A list that contains the id of the qcm and the id of the matiere
         list_response_received = response_data
         qcm_choix = ""
@@ -143,9 +144,8 @@ if __name__ == '__main__':
             print "############ SCOREBOARD ############"
             print "####################################"
             if str(response_data)!="Vous n'avez fait aucun QCM :(" or str(response_data)!="Aucun QCM n'a encore été effectué :)":
-                for i in range(response_data.count(';')):
+                for i in range(int(response_data.count(';'))):
                     tmp = response_data.split(';')[i]
-                    #print tmp
                     id_qcm = str(tmp.split()[0])
                     id_score = str(tmp.split()[1])
                     print "Vous avez obtenu un score de "+id_score+" au QCM ayant l'ID "+id_qcm
@@ -156,9 +156,8 @@ if __name__ == '__main__':
 
 
 
-        for i in range(list_response_received.count(';')):
+        for i in range(int(list_response_received.count(';'))):
             tmp = list_response_received.split(';')[i]
-            #print tmp
             qcm_choix = str(tmp.split()[0])
             matiere_choix = str(tmp.split()[1])
             print "Vous avez la possibilité de choisir le QCM ayant l'ID "+qcm_choix+" correspondant à la matière "+matiere_choix
@@ -173,5 +172,32 @@ if __name__ == '__main__':
         print "Authentication failed"
     else :
         print "/!\\ Aucun QCM destiné à vous n'a été créé ! :( /!\\"
+        info_score = str(raw_input('souhaitez-vous connaître vos scores précedents ? :[Oui] ou [Non] '))
+
+        if(info_score=="Oui" or info_score=="O" or info_score=="oui" or info_score=="o" or info_score=="Yes" or info_score=="yes" or info_score=="y"):
+            post_dict = {'type': "info_score", 'StudentID': str(idEtu)}
+
+            # Envoie de la demande des scores
+            param = urllib.urlencode(post_dict)
+            post_req = urllib2.Request(url, param)
+            response = urllib2.urlopen(post_req)
+            response_data = response.read()
+
+            id_qcm = ""
+            id_score = ""
+
+            print "####################################"
+            print "############ SCOREBOARD ############"
+            print "####################################"
+            if str(response_data)!="Vous n'avez fait aucun QCM :(" or str(response_data)!="Aucun QCM n'a encore été effectué :)":
+                for i in range(int(response_data.count(';'))):
+                    tmp = response_data.split(';')[i]
+                    id_qcm = str(tmp.split()[0])
+                    id_score = str(tmp.split()[1])
+                    print "Vous avez obtenu un score de "+id_score+" au QCM ayant l'ID "+id_qcm
+            else :
+                print response_data
+            time.sleep(1)
+            print "####################################\n"
 
     response.close()

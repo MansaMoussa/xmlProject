@@ -92,12 +92,12 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     id_student = splited_response_data[0]
                     id_formation = splited_response_data[1]
                     xml_files = [f for f in glob.glob("*.xml")]
-                    for i in range(len(xml_files)) :
+                    for i in range(int(len(xml_files))) :
                         prefix_file_name = xml_files[i].split('.xml')[0]
                         if str(prefix_file_name).isdigit() :
                             myfile = etree.parse(str(xml_files[i]))
-                            for j in range(2,len(splited_response_data)) :
-                                if not not myfile.xpath('/QCM2/Questionnaire[@id=\"'+str(prefix_file_name)+'\"][@id_formation=\"'+str(id_formation)+'\"][@id_matiere=\"'+str(splited_response_data[j])+'\"]'):
+                            for j in range(2,int(len(splited_response_data))) :
+                                if not not myfile.xpath('/QCM/Questionnaire[@id=\"'+str(prefix_file_name)+'\"][@id_formation=\"'+str(id_formation)+'\"][@id_matiere=\"'+str(splited_response_data[j])+'\"]'):
                                     # l'id du questionnaire + l'id de la matiere
                                     qcm_proposition =qcm_proposition+str(prefix_file_name)+" "+str(splited_response_data[j])+";"
                     # Une proposition de qcm est envoyé à l'étudiant
@@ -127,18 +127,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 else :
                     scores_student = "Aucun QCM n'a encore été effectué :)"
                 self.wfile.write(scores_student)
-            else:
+            else :
                 print "Ne rien faire"
-
-
-
-        # print xml.dom.minidom.parseString(test).toxml()
-        # print xml.dom.minidom.parseString(post_data).toxml()
-        # faire la difference sur qui envoie le fichier pour savoir l'action a faire
-        # test si ID existe puis si unique enregistrer le XML
-        # verification avec xpath
-
-        #envoie OK OU KO au redacteur
 
     def verificationQuestionnaire(self,id):
         for i in os.listdir(os.getcwd()):
@@ -171,7 +161,6 @@ class Thread(threading.Thread):
                 fichier.write("<?xml version=\"1.0\" ?>\n<Resultat>\n</Resultat>")
                 fichier.close()
                 fichier = open("score.xml", "r")
-             #   print("Wrong file or file path")
 
 
             dom1 = parseString(fichier.read())
