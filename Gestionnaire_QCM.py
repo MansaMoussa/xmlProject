@@ -120,7 +120,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(scores_student)
             else :
                 print "Ne rien faire"
-                
+
     #fonction permettant de verifier si le questionnaire existe déjà avec l'id donné
     def verificationQuestionnaire(self,id):
         for i in os.listdir(os.getcwd()):
@@ -154,11 +154,6 @@ class Thread(threading.Thread):
                 fichier.write("<?xml version=\"1.0\" ?>\n<Resultat>\n</Resultat>")
                 fichier.close()
                 fichier = open("score.xml", "r")
-<<<<<<< HEAD:gestionnaire_QCM.py
-=======
-
->>>>>>> c7670181c8668cdb4510b57fda47f9671ad23c12:Gestionnaire_QCM.py
-
 
             dom1 = parseString(fichier.read())
             fichier.close()
