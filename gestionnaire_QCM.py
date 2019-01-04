@@ -83,7 +83,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 post_req = urllib2.Request(url, param)
                 response = urllib2.urlopen(post_req)
                 response_data = response.read()
-                print response_data
+
                 if(len(response_data)>=3):
                     self.send_header('Content-type', 'text/html')
                     self.end_headers()
@@ -108,6 +108,25 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.wfile.write("KO")
                 response.close()
                 print "###### Authentication Ended ######"
+            elif str(data["type"][0])=="info_score":
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                #self.wfile.write("KO")
+                scores_student = ""
+                if os.path.exists("./score.xml"):
+                    myScorefile = etree.parse("score.xml")
+                    id_qcm = myScorefile.xpath('./Etudiant[@id="7"]/@idQuestionnaire')
+                    id_score = myScorefile.xpath('./Etudiant[@id="7"]/@score')
+
+                    if not not id_qcm :
+                        for i in range(int(len(id_qcm))):
+                            scores_student=scores_student+str(id_qcm[i])+" "+str(id_score[i])+";"
+                    else :
+                        scores_student="Vous n'avez fait aucun QCM :("
+                    # La liste des scores effectués avec l'id des QCM correspondant est envoyé à l'étudiant
+                else :
+                    scores_student = "Aucun QCM n'a encore été effectué :)"
+                self.wfile.write(scores_student)
             else:
                 print "Ne rien faire"
 

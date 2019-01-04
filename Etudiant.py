@@ -8,6 +8,7 @@
 import urllib
 import urllib2
 import pika
+import time
 import xml.sax
 from xml.sax import saxutils
 from xml.dom.minidom import getDOMImplementation
@@ -115,23 +116,54 @@ if __name__ == '__main__':
     post_req = urllib2.Request(url, param)
     response = urllib2.urlopen(post_req)
     response_data = response.read()
-    
+
     if ((str(response_data)!="KO" and str(response_data.split(' ')[0]).isdigit()) or str(response_data)=="OK") :
         print "Authentication succeded"
-        print response_data
+        #print response_data
         # A list that contains the id of the qcm and the id of the matiere
         list_response_received = response_data
         qcm_choix = ""
         matiere_choix = ""
 
+        info_score = str(raw_input('souhaitez-vous connaître vos scores précedents ? :[Oui] ou [Non] '))
+
+        if(info_score=="Oui" or info_score=="O" or info_score=="oui" or info_score=="o" or info_score=="Yes" or info_score=="yes" or info_score=="y"):
+            post_dict = {'type': "info_score", 'StudentID': str(idEtu)}
+
+            # Envoie de la demande des scores
+            param = urllib.urlencode(post_dict)
+            post_req = urllib2.Request(url, param)
+            response = urllib2.urlopen(post_req)
+            response_data = response.read()
+
+            id_qcm = ""
+            id_score = ""
+
+            print "####################################"
+            print "############ SCOREBOARD ############"
+            print "####################################"
+            if str(response_data)!="Vous n'avez fait aucun QCM :(" or str(response_data)!="Aucun QCM n'a encore été effectué :)":
+                for i in range(response_data.count(';')):
+                    tmp = response_data.split(';')[i]
+                    #print tmp
+                    id_qcm = str(tmp.split()[0])
+                    id_score = str(tmp.split()[1])
+                    print "Vous avez obtenu un score de "+id_score+" au QCM ayant l'ID "+id_qcm
+            else :
+                print response_data
+            time.sleep(1)
+            print "####################################\n"
+
+
+
         for i in range(list_response_received.count(';')):
             tmp = list_response_received.split(';')[i]
-            print tmp
+            #print tmp
             qcm_choix = str(tmp.split()[0])
             matiere_choix = str(tmp.split()[1])
             print "Vous avez la possibilité de choisir le QCM ayant l'ID "+qcm_choix+" correspondant à la matière "+matiere_choix
 
-        qcm_choix = raw_input('Veuillez choisir l\'ID du QCM souhaitez faire : ')
+        qcm_choix = raw_input('Veuillez choisir l\'ID du QCM que souhaitez faire : ')
 
 
         parser = xml.sax.make_parser()

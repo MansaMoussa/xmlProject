@@ -165,7 +165,7 @@ class Thread(threading.Thread):
 
 
 if __name__ == '__main__':
-    print "test"
+    print "Gestionnaire Correction Server Started"
     th1 = Thread(10)
 
     httpd = HTTPServer(('127.0.0.1', 8383), SimpleHTTPRequestHandler)

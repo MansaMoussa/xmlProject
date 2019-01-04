@@ -28,16 +28,14 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers["Content-Length"])
         post_data = self.rfile.read(content_length)
         data = parse_qs(post_data[0:])
-        myDB = make_xml()
-        myfile = etree.parse("auth.xml")
-
 
 
         if str(data["type"][0])=="authEtudiant":
             print "\n*******************************************************"
             print "**** THE SERVER START CHECKING THE AUTHENTICATION ****\n"
             print "*******************************************************\n"
-
+            myDB = make_xml()
+            myfile = etree.parse("auth.xml")
             # Envoie de la demande d'autentification au serveur dédié
             if not not myfile.xpath('./Student[@id=\"'+str(data["StudentID"][0])+'\"][@pwd=\"'+str(data["StudentPWD"][0])+'\"]'):
                 self.send_header('Content-type', 'text/html')
@@ -67,7 +65,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 print data["StudentPWD"],
                 print " DOES NOT EXIST"
 
-            print "#########################################"
+            print "########## AUTHENTICATION CHECKED ##########"
 
 def make_xml():
     impl = getDOMImplementation()
