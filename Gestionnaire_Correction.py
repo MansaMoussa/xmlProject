@@ -116,10 +116,10 @@ class InkscapeSvgHandler(xml.sax.ContentHandler):
 # Classe qui va être utilisé pour faire un thread pour la gestion du rabbitMQ
 class Thread(threading.Thread):
 
-    def __init__(self, i):
+    def __init__(self):
         super(Thread, self).__init__()
         self.start()
-        i = i
+
 
     def run(self):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
@@ -144,7 +144,7 @@ class Thread(threading.Thread):
 if __name__ == '__main__':
     print "Gestionnaire Correction Server Started(HTTP)"
     # creation d'un thread car 2 fonction bloquante(httpserver et rabbitmq)
-    th1 = Thread(10)
+    th1 = Thread()
 
     httpd = HTTPServer(('127.0.0.1', 8383), SimpleHTTPRequestHandler)
     httpd.serve_forever()

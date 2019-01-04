@@ -150,11 +150,12 @@ class Thread(threading.Thread):
             try:
                 fichier = open("score.xml", "r")
             except IOError:
+                #   le fichier n'existe pas encore(première utilisation)
                 fichier = open("score.xml", "w")
                 fichier.write("<?xml version=\"1.0\" ?>\n<Resultat>\n</Resultat>")
                 fichier.close()
                 fichier = open("score.xml", "r")
-             #   print("Wrong file or file path")
+
 
 
             dom1 = parseString(fichier.read())
@@ -187,7 +188,7 @@ class Thread(threading.Thread):
                               queue='result',
                               no_ack=True)
 
-        print(' [*] Waiting for messages. To exit press CTRL+C')
+        print(' [*] Waiting for messages(RabbitMQ)')
 
         channel.start_consuming()
 

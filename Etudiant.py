@@ -125,6 +125,7 @@ if __name__ == '__main__':
             print "####################################"
             print "############ SCOREBOARD ############"
             print "####################################"
+            print response_data
             if str(response_data)!="Vous n'avez fait aucun QCM :(" or str(response_data)!="Aucun QCM n'a encore été effectué :)":
                 for i in range(response_data.count(';')):
                     tmp = response_data.split(';')[i]

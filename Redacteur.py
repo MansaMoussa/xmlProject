@@ -32,14 +32,10 @@ def make_xml():
     NodeQuestionnaire.setAttribute("id_formation",  raw_input('Quelle id de formation voulez vous mettre pour ce questionnaire?'))
     NodeQuestionnaire.setAttribute("id_matiere", raw_input('Quelle id de matiere voulez vous mettre pour ce questionnaire?') )
     rootNodeQuestionnaire.appendChild(NodeQuestionnaire)
-    # creation des différentes questions
 
-    # debut de la boucle while de question
-    cpt = 0;
     try:
         nbquestion = int(raw_input('Combien de question voulez vous?'))
         while True:
-            # Ton code…
             if nbquestion > 0:
                 break
             else:
@@ -51,6 +47,10 @@ def make_xml():
 
     contenuNodeReponse = documentQuestionnaire.createElement("contenu")
 
+    # creation des différentes questions
+
+    # debut de la boucle while de question
+    cpt = 0;
     while nbquestion > cpt:
         # creation question pour reponse
         questionNodeReponse = documentQuestionnaire.createElement("Question")
@@ -70,7 +70,6 @@ def make_xml():
         try:
             nbReponse = int(raw_input('Combien de réponse voulez vous ?'))
             while True:
-                # Ton code…
                 if nbReponse > 0:
                     break
                 else:
@@ -96,8 +95,6 @@ def make_xml():
         contenuNodeReponse.appendChild(questionNodeReponse)
         NodeQuestionnaire.appendChild(questionNodeQuestionnaire)
     rootNodeReponse.appendChild(contenuNodeReponse)
-    print documentCopieReponse.toprettyxml()
-    #  print newdoc.toxml()
     return documentQuestionnaire.toprettyxml(), documentCopieReponse.toprettyxml()
 
 
