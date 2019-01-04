@@ -36,13 +36,18 @@ def make_xml():
 
     # debut de la boucle while de question
     cpt = 0;
-    nbquestion = int(raw_input('Combien de question voulez vous?'))
-    while True:
-        # Ton code…
-        if nbquestion > 0:
-            break
-        else:
-            nbquestion = int(raw_input('Réponse non approprié, combien de question voulez vous?'))
+    try:
+        nbquestion = int(raw_input('Combien de question voulez vous?'))
+        while True:
+            # Ton code…
+            if nbquestion > 0:
+                break
+            else:
+                nbquestion = int(raw_input('Réponse non approprié, combien de question voulez vous?'))
+    except ValueError:
+       print "Veuillez choisir un nombre pour le prochain test"
+       exit(-1)
+
 
     contenuNodeReponse = documentQuestionnaire.createElement("contenu")
 
@@ -61,13 +66,19 @@ def make_xml():
 
         cpt = cpt + 1
 
-        nbReponse = int(raw_input('Combien de réponse voulez vous ?'))
-        while True:
-            # Ton code…
-            if nbReponse > 0:
-                break
-            else:
-                nbReponse = int(raw_input('Réponse non approprié, combien de réponse voulez vous ?'))
+
+        try:
+            nbReponse = int(raw_input('Combien de réponse voulez vous ?'))
+            while True:
+                # Ton code…
+                if nbReponse > 0:
+                    break
+                else:
+                    nbReponse = int(raw_input('Réponse non approprié, combien de réponse voulez vous ?'))
+        except ValueError:
+            print "Veuillez choisir un nombre pour le prochain test"
+            exit(-1)
+
         cptReponse = 0
 
         while nbReponse > cptReponse:
@@ -79,6 +90,7 @@ def make_xml():
 
             cptReponse = cptReponse + 1
             questionNodeQuestionnaire.appendChild(choixNode)
+
         # demande de bonne reponse et mise en place de la reponse dans le bon endroit
         questionNodeReponse.setAttribute("rep", raw_input('Quelle était l\'id de la bonne reponse? (La première réponse est l\id est égale à 0, la deuxième réponse l\'id est égale à  1'))
         contenuNodeReponse.appendChild(questionNodeReponse)
