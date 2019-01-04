@@ -68,7 +68,7 @@ def make_xml():
             cptReponse = cptReponse + 1
             newnode2.appendChild(newnodechoix)
         # demande de bonne reponse et mise en place de la reponse dans le bon endroit
-        newnodereponse2.setAttribute("rep", raw_input('Quelle était l\'id de la bonne reponse? '))
+        newnodereponse2.setAttribute("rep", raw_input('Quelle était l\'id de la bonne reponse? (La première réponse est l\id est égale à 0, la deuxième réponse l\'id est égale à  1'))
         newnodecontenureponse.appendChild(newnodereponse2)
         newnode.appendChild(newnode2)
     newrootreponse.appendChild(newnodecontenureponse)
